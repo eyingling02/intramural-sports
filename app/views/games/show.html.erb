@@ -1,5 +1,4 @@
-  <%= include_gon %>
-  <head>
+<head>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
   </head>
@@ -8,9 +7,9 @@
   <h3><%=@league.sport%> League</h3>
   <h1>Game <%=@game.id%></h1>
   <h3><%=@home_team.name%> vs <%=@away_team.name%></h3>
-  <h4>Location:<%=@game.address%></h4>
-  <h4>Date:<%=@game.date.strftime('%v')%></h4>
-  <h4>Time:<%=@game.time.strftime('%r')%></h4>
+  <h4>Location: <%=@game.address%></h4>
+  <h4>Date: <%=@date%></h4>
+  <h4>Time: <%=@time%></h4>
 
   <a href="http://maps.google.com/?q=<%=@game.address%>">Map </a>
 
@@ -18,7 +17,7 @@
     <div id="map"></div>
   </div>
 
-<script src="//maps.google.com/maps/api/js?v=3.24&key=AIzaSyDNxSlZZdYh_jO8HsYJGkQlLnNEwKqEYjo"></script>
+<script src="//maps.google.com/maps/api/js?v=3.24&key=<%= ENV['MAP_KEY'] %>"></script>
 
 <script type="text/javascript">
 
@@ -29,18 +28,24 @@
 
     function initMap() {
       $('#teams-games').ready(function(event) {
-        console.log("YASSSS")
         $.ajax({
             url: '/leagues/<%=@league.id%>/games/<%=@game.id%>',
             method: 'GET',
             data: false
           })
           .done(function(serverData) {
-              var lat = parseInt(serverData[0])
-              var lng = parseInt(serverData[1])
+            console.log(serverData)
+              var latLng = {lat: parseFloat(serverData[0]), lng: parseFloat(serverData[1])};
+              console.log(latLng)
               var map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: lat, lng: lng},
-                zoom: 12
+                zoom: 16,
+                center: latLng
+              });
+
+              var marker = new google.maps.Marker({
+                position: latLng,
+                map: map,
+                title: 'Game Location'
               });
           })
       })
