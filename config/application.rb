@@ -15,6 +15,8 @@ require "action_cable/engine"
 require "sprockets/railtie"
 require "bcrypt"
 require "haml"
+require 'rspec-rails'
+require 'capybara'
 require 'dotenv'
 Dotenv.load
 require 'twilio-ruby'
